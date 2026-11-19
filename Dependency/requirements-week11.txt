@@ -1,0 +1,18 @@
+# Week11 主线依赖：Day06-Day10 共用
+langchain>=1.0,<2.0
+langchain-core>=1.0,<2.0
+# Day08 常见文件 Loader；该包处于 sunset 阶段，开课前需复核迁移状态
+langchain-community>=0.4,<0.5
+langchain-openai>=1.0,<2.0
+langchain-text-splitters>=1.0,<2.0
+langchain-huggingface[full]>=1.0,<2.0
+langchain-chroma>=1.0,<2.0
+pypdf>=6.16,<7.0
+docx2txt>=0.9,<1.0
+langgraph>=1.0,<2.0
+pydantic>=2.0,<3.0
+python-dotenv>=1.0,<2.0
+
+# 可选模型集成：只在需要运行对应示例时取消注释后重新安装
+# langchain-deepseek>=1.0,<2.0
+# langchain-ollama>=1.0,<2.0
