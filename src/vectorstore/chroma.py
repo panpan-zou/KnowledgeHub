@@ -1,18 +1,19 @@
 """ chroma 维护 """
+
 from langchain_chroma import Chroma
 from dotenv import load_dotenv
-from referencing import retrieval
 
 from .embedding import embedding
 import os
 load_dotenv()
 
 chroma_dir = os.getenv("CHROMA_PATH")
+collection_name = os.environ['COLLECTION_NAME']
 
 class ChromaService:
     def __init__(self):
         self.chroma = Chroma(
-            collection_name='demo',
+            collection_name=collection_name,
             persist_directory=chroma_dir,
             embedding_function=embedding,
             collection_configuration={'hnsw': {'space': 'cosine'}}
@@ -42,8 +43,7 @@ class ChromaService:
         )
 
     def query_question(self, question):
-        retriever = self.chroma.as_retriever()
-        return retriever.invoke(question, k=3)
+        return self.chroma.similarity_search_with_score(question, k=3)
 
     def get_document(self, chunk_id:list):
         return self.chroma.get_by_ids(chunk_id)

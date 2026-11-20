@@ -3,6 +3,8 @@
 from src.document.loader import load_documents
 from src.document.splitter import split_document
 from src.vectorstore.chroma import ChromaService
+from src.retrieval.retriever import get_retriever
+
 from dotenv import load_dotenv
 import json
 import os
@@ -46,19 +48,19 @@ def main():
                 print(e)
 
         elif choice == '2':
-            question = input('请输入问题->:').strip()
-            evidence = chroma.query_question(question)
-            for e in evidence:
+            try:
+                question = input('请输入问题->:').strip()
+                evidence = chroma.query_question(question)
+                for e in evidence:
+                    print(e)
+            except Exception as e:
                 print(e)
-            # try:
-            #     question = input('请输入问题->:').strip()
-            #     evidence = chroma.query_question(question)
-            #     for e in evidence:
-            #         print(json.dumps(e, ensure_ascii=False, indent=4))
-            # except Exception as e:
-            #     print(e)
+
         elif choice == '3':
-            pass
+            retriever = get_retriever()
+            evidence = retriever.invoke('住宿费怎么报销')
+            print(evidence)
+
         elif choice == '0':
             break
         else:

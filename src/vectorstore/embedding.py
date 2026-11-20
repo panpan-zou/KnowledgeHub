@@ -10,7 +10,7 @@ embedding = HuggingFaceEmbeddings(
     model_kwargs={'device': 'cpu'},
     encode_kwargs={'normalize_embeddings': True},
     query_encode_kwargs={'normalize_embeddings': True},
-    show_progress=True,
+    show_progress=False,
 )
 
 

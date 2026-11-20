@@ -15,6 +15,7 @@ splitter = RecursiveCharacterTextSplitter(
     add_start_index=True
 )
 
+# 给每一个 chunk 做专属的 chunk_id
 def make_id(index, source, text):
     return hashlib.sha256(f'{index}{source}{text}'.encode('utf-8')).hexdigest()[:24]
 
