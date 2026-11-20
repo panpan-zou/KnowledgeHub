@@ -1,0 +1,8 @@
+doc_id,filename,format,title,department,doc_type,version,effective_date,confidentiality,body_chars,estimated_chunks,has_table,ocr_required,notes
+HR-2026-001,employee_handbook.md,Markdown,星海科技 员工手册（2026 版）,人力资源部,制度规范,v2.3,2026-01-01,内部公开,1239,3,是,否,"事实锚点最密；与 rag_eval_set.csv 的 12 道评测题一一对齐"
+PRD-2026-014,knowledgehub_product_manual.md,Markdown,KnowledgeHub 企业知识库产品手册,产品部,产品手册,v1.4,2026-06-30,内部公开,1474,4,是,否,"含版本矩阵与核心参数表；参数与 config.example.yaml 一致"
+ENG-2026-008,api_reference.txt,TXT,KnowledgeHub API 接口说明,研发部,技术文档,v1.2,2026-07-01,内部公开,2946,8,否,否,"纯文本排版；字符数最多；含示例响应中的 10:00-16:00 易造成跨文档歧义"
+PM-2026-Q2-01,project_retro_2026q2.md,Markdown,KnowledgeHub 一期上线复盘（2026 Q2）,项目部,项目复盘,v1.0,2026-07-05,内部公开,1343,4,是,否,"指标与问题根因；含表格切分与扫描件 PDF 两类已知缺陷"
+CS-2026-021,customer_faq.md,Markdown,KnowledgeHub 客户常见问题（FAQ）,客户成功部,常见问题,v3.1,2026-08-12,对外可发布,1411,4,否,否,"问答对结构；问题本身可直接作为检索测试题"
+HR-2026-007,onboarding_guide.docx,Word,星海科技 新员工入职指南,人力资源部,入职指南,v1.6,2026-05-01,内部公开,946,3,是,否,"由 python-docx 生成；含两张真实表格用于验证 Word 表格抽取"
+SEC-2026-003,security_policy.pdf,PDF,数据安全管理规范,信息安全部,安全规范,v2.1,2026-04-15,内部机密,957,3,是,否,"由 fpdf2 + simhei.ttf 生成的文本层 PDF；无需 OCR；含 L1-L4 分级表"

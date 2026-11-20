@@ -1,0 +1,93 @@
+---
+doc_id: ENG-2026-008
+title: KnowledgeHub API 接口说明
+department: 研发部
+doc_type: 技术文档
+version: v1.2
+effective_date: 2026-07-01
+confidentiality: 内部公开
+tags: [FastAPI, 接口, 错误码, 限流, 流式输出]
+---
+
+================================================================
+KnowledgeHub API 接口说明（v1.2）
+服务基址：http://localhost:8000/api/v1
+维护部门：研发部
+================================================================
+
+1. 接口清单
+----------------------------------------------------------------
+POST   /ask                       RAG 问答（单次问答）
+POST   /agent/chat                Agent 多步骤任务对话
+GET    /health                    健康检查
+POST   /documents/upload          文档上传并触发入库
+DELETE /documents/{doc_id}        删除文档及其向量
+GET    /sessions/{id}/history     查询会话历史
+POST   /feedback                  提交答案勘误反馈
+
+2. POST /ask 请求体
+----------------------------------------------------------------
+question      string  必填  用户问题，最长 2000 字符
+session_id    string  可选  同一会话传入相同值以保留多轮上下文
+top_k         int     可选  检索返回块数，默认 4，范围 1-10
+department    string  可选  按部门过滤，例如「人力资源部」
+doc_type      string  可选  按文档类型过滤，例如「制度规范」
+stream        bool    可选  是否流式输出，默认 false
+
+3. POST /ask 响应体
+----------------------------------------------------------------
+request_id    string  请求唯一标识
+answer        string  模型生成的答案，或拒答提示
+confidence    float   置信度，0 到 1
+refused       bool    是否因证据不足拒答
+citations     array   来源引用列表，含 source、title、section、chunk_id、score
+retrieved_chunks  int  实际召回块数
+max_score     float   召回块中的最高相似度
+threshold     float   本次使用的拒答阈值，默认 0.35
+latency_ms    int     端到端耗时（毫秒）
+token_usage   object  prompt 与 completion 的 token 数
+
+4. POST /documents/upload 说明
+----------------------------------------------------------------
+单文件上限 20 MB，单次最多 50 个文件，仅接受 PDF、DOCX、TXT、MD。
+文本编码 UTF-8。上传后异步执行清洗、切分、向量化与入库，
+通常在 30 秒内可检索到；大批量任务可通过 /health 查看队列状态。
+不含文本层的扫描件 PDF 会被拒绝并返回错误码 422。
+
+5. 错误码
+----------------------------------------------------------------
+400  请求参数格式错误
+404  指定的文档或会话不存在
+422  文件内容无法解析（加密文档、扫描件无文本层、编码非 UTF-8）
+429  触发限流，默认每账号每分钟 30 次
+500  模型调用或向量库内部错误
+503  服务未完成初始化，请稍后重试 /health
+
+6. 流式输出
+----------------------------------------------------------------
+stream=true 时返回 SSE（text/event-stream），逐块推送 token。
+事件类型包括 delta（增量文本）、citation（来源引用）、done（结束）。
+客户端需在收到 done 事件后再渲染完整引用列表。
+
+7. 调用示例
+----------------------------------------------------------------
+curl -X POST http://localhost:8000/api/v1/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question":"核心工作时段是几点到几点？","top_k":4,"department":"人力资源部"}'
+
+示例响应（有证据）：
+  {"request_id":"req-8f3c21a9","answer":"核心工作时段为 10:00-16:00。",
+   "confidence":0.91,"refused":false,
+   "citations":[{"source":"data/employee_handbook.md","section":"一、考勤与工作时间","score":0.89}],
+   "retrieved_chunks":4,"max_score":0.89,"threshold":0.35,"latency_ms":1240}
+
+示例响应（拒答）：
+  {"request_id":"req-2b7e10d4","answer":"暂无依据：未检索到相关制度文档。",
+   "confidence":0.12,"refused":true,"citations":[],
+   "retrieved_chunks":4,"max_score":0.21,"threshold":0.35,"latency_ms":860}
+
+8. 注意事项
+----------------------------------------------------------------
+所有接口的密钥由环境变量注入，禁止在请求或日志中明文传递。
+会话隔离以 session_id 为粒度，不同 session_id 之间历史不共享。
+产品能力与版本对应关系见 PRD-2026-014《KnowledgeHub 企业知识库产品手册》。
