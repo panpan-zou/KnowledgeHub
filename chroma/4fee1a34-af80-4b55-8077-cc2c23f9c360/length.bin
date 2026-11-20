@@ -1,1 +1,0 @@
-invalid type: string "---\ndoc_id: SEC-2026-003\ntitle: 数据安全管理规范\ndepartment: 信息安全部\ndoc_type: 安全规范\nversion: v2.1\neffective_date: 2026-04-15\nconfidentiality: 内部机密\ntags: [数据分级, 外部AI, 审批, 加密, 审计]\n---\n数据安全管理规范\n本规范适用于星海科技全部业务系统，包括  KnowledgeHub  知识库平台。HR-2026-001\n

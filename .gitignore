@@ -5,6 +5,9 @@ __pycache__/
 # 虚拟环境
 ../.venv/
 venv/
+.venv
+
+chroma
 
 # 编辑器与系统文件
 .vscode/
